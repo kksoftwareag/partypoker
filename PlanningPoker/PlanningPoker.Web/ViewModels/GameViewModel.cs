@@ -1,9 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.DataProtection;
 using PlanningPoker.Web.Game;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,7 +21,6 @@ namespace PlanningPoker.Web.ViewModels
         public GameInstance Game { get; private set; }
 
         protected override void OnInitialized()
-        //protected override async Task OnInitializedAsync()
         {
             this.Game = GameInstance.Find(this.Hash);
             this.Game.Changed += this.Game_Changed;
