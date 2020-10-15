@@ -14,17 +14,17 @@
     </div>
 </div>
 
-<div class="row mt-3">
-    @if (this.Game != null)
-    {
+@if (this.Game != null)
+{
+    <div class="row mt-3">
         <div class="col-auto">
             <button class="btn btn-primary" disabled="@(this.Game.CurrentRound == null || this.Game.CurrentRound.Cards.Any() == false || this.Game.CurrentRound.IsRevealed == true)" @onclick="this.RevealCards">Reveal Cards</button>
         </div>
         <div class="col-auto">
             <button class="btn btn-success" disabled="@(this.Game.CurrentRound?.IsRevealed == false)" @onclick="this.StartNewRound">New Round</button>
         </div>
-    }
-</div>
+    </div>
+}
 
 @if (this.Game?.CurrentRound != null)
 {
