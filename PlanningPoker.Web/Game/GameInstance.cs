@@ -26,7 +26,7 @@ namespace PlanningPoker.Web.Game
 
         public List<Player> Players { get; } = new List<Player>();
 
-        public List<Round> Rounds { get; } = new List<Round>();
+        public List<Round> Rounds { get; } = new List<Round>() { new Round() };
 
         public Round CurrentRound => this.Rounds.LastOrDefault();
 
