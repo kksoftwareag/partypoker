@@ -1,0 +1,62 @@
+﻿@page "/{Hash}"
+@inherits GameViewModel
+You are:
+<input type="text" value="@this.PlayerName" @onchange="this.NameChanged" />
+
+<button @onclick="this.StartNewRound">New Round</button>
+<button @onclick="this.RevealCards">Reveal Cards</button>
+
+@if (this.Game?.CurrentRound != null)
+{
+    @:Round: @this.Game.RoundNumber
+    <br />
+
+
+}
+
+@if (this.Game?.Players.Any() == true)
+{
+    @foreach (var player in this.Game.Players)
+    {
+        <div>
+            @player.Name
+        </div>
+    }
+}
+
+@if (this.Game?.Rounds.Any() == true)
+{
+    <div>
+        Previous Rounds:
+
+        @foreach (var round in this.Game.Rounds)
+        {
+            <div>
+                Round @(1 * this.Game.Rounds.IndexOf(round))
+                <br />
+
+                @foreach (var card in round.Cards)
+                {
+                    @card.Key.Name@::
+                    @if (round.IsRevealed == true)
+                    {
+                        @card.Value
+                    }
+                    else
+                    {
+                        @:👍
+                    }
+                    <br />
+                }
+            </div>
+        }
+    </div>
+}
+
+@if (this.Game != null && this.Game.CurrentRound != null)
+{
+    @foreach (var card in this.Game.CardDeck)
+    {
+        <button @onclick="(() => this.VoteCard(card))">@card</button>
+    }
+}

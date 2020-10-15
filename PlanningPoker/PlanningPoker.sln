@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanningPoker.Web", "PlanningPoker.Web\PlanningPoker.Web.csproj", "{0E35E15F-1586-4B2F-B0EE-78126C20E21B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E35E15F-1586-4B2F-B0EE-78126C20E21B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E35E15F-1586-4B2F-B0EE-78126C20E21B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E35E15F-1586-4B2F-B0EE-78126C20E21B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E35E15F-1586-4B2F-B0EE-78126C20E21B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FB37865B-FDFD-474D-935C-AF4BDEBBC2B2}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.kk-software.de/tfs/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = PlanningPoker.Web\\PlanningPoker.Web.csproj
+		SccProjectName1 = PlanningPoker.Web
+		SccLocalPath1 = PlanningPoker.Web
+	EndGlobalSection
+EndGlobal
