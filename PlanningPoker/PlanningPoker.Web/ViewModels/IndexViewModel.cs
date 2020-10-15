@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using PlanningPoker.Web.Game;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PlanningPoker.Web.ViewModels
 {
@@ -12,10 +9,9 @@ namespace PlanningPoker.Web.ViewModels
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        public async Task CreateGame()
+        public void CreateGame()
         {
-            this.NavigationManager.NavigateTo(GameName.GetRandomEmoji());
-            //this.NavigationManager.NavigateTo("Game1");
+            this.NavigationManager.NavigateTo(Guid.NewGuid().ToString().Split("-").First());
         }
     }
 }

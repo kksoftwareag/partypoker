@@ -9,8 +9,8 @@ You are:
 
 @if (this.Game != null)
 {
-    <button @onclick="this.RevealCards">Reveal Cards</button>
-    <button disabled="@(this.Game.CurrentRound.IsRevealed == false)" @onclick="this.StartNewRound">New Round</button>
+    <button disabled="@(this.Game.CurrentRound == null || this.Game.CurrentRound.Cards.Any() == false)" @onclick="this.RevealCards">Reveal Cards</button>
+    <button disabled="@(this.Game.CurrentRound?.IsRevealed == false)" @onclick="this.StartNewRound">New Round</button>
 }
 
 @if (this.Game?.CurrentRound != null)

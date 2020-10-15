@@ -45,7 +45,7 @@ namespace PlanningPoker.Web.ViewModels
             {
                 player = new Player()
                 {
-                    Name = "unnamed",
+                    Name = String.Join(String.Empty, Enumerable.Range(0, 3).Select(x => EmojiRandomizer.GetRandomEmoji())),
                     Secret = Guid.NewGuid()
                 };
 
@@ -75,10 +75,11 @@ namespace PlanningPoker.Web.ViewModels
             this.Game.RevealCards();
         }
 
-        protected void NameChanged(ChangeEventArgs e)
+        protected async Task NameChanged(ChangeEventArgs e)
         {
             this.PlayerName = (string)e.Value;
             this.Game.ChangePlayersName(this.Player, this.PlayerName);
+            await this.LocalStorage.SetItemAsync(nameof(Player), this.Player);
         }
 
         private void Game_Changed(object sender, EventArgs e)
