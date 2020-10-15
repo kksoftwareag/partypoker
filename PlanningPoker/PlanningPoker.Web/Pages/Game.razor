@@ -1,17 +1,22 @@
 ﻿@page "/{Hash}"
 @inherits GameViewModel
 You are:
-<input type="text" value="@this.PlayerName" @onchange="this.NameChanged" />
 
-<button @onclick="this.StartNewRound">New Round</button>
-<button @onclick="this.RevealCards">Reveal Cards</button>
+@if (this.Player != null)
+{
+    <input type="text" value="@this.PlayerName" @onchange="this.NameChanged" />
+}
+
+@if (this.Game != null)
+{
+    <button @onclick="this.RevealCards">Reveal Cards</button>
+    <button disabled="@(this.Game.CurrentRound.IsRevealed == false)" @onclick="this.StartNewRound">New Round</button>
+}
 
 @if (this.Game?.CurrentRound != null)
 {
     @:Round: @this.Game.RoundNumber
     <br />
-
-
 }
 
 @if (this.Game?.Players.Any() == true)
@@ -38,14 +43,16 @@ You are:
                 @foreach (var card in round.Cards)
                 {
                     @card.Key.Name@::
-                    @if (round.IsRevealed == true)
-                    {
-                        @card.Value
-                    }
-                    else
-                    {
-                        @:👍
-                    }
+                    <kbd>
+                        @if (round.IsRevealed == true)
+                        {
+                            @card.Value
+                        }
+                        else
+                        {
+                            @:👍
+                        }
+                    </kbd>
                     <br />
                 }
             </div>
