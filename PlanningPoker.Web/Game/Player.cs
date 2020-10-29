@@ -32,5 +32,13 @@ namespace PlanningPoker.Web.Game
         {
             return this.Secret.GetHashCode();
         }
+
+        public static bool operator ==(Player left, Player right)
+        {
+            return left?.Equals(right) == true;
+        }
+
+        public static bool operator !=(Player left, Player right) => left == right == false;
+
     }
 }
