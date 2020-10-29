@@ -39,8 +39,11 @@
     <div class="row mt-3">
         @foreach (var player in this.Game.Players)
         {
-            <div class="col-auto">
-                @player.Name
+            <div>
+                <kbd class="ml-2 mr-1" style="background-color: #999;">
+                    @player.Name
+                </kbd>
+
                 @if (this.Game.CurrentRound.Cards.ContainsKey(player) == true)
                 {
                     if (this.Game.CurrentRound.IsRevealed == true)
@@ -74,37 +77,37 @@
 </div>
 
 @*<div class="row mt-3">
-        @if (this.Game?.Rounds.Count > 1)
-        {
-            <div>
-                Previous Rounds:
+    @if (this.Game?.Rounds.Count > 1)
+    {
+        <div>
+            Previous Rounds:
 
-                @foreach (var round in this.Game.Rounds.Except(new[] { this.Game.CurrentRound }))
-                {
-                    <div>
-                        Round @(1 * this.Game.Rounds.IndexOf(round))
-                        <br />
+            @foreach (var round in this.Game.Rounds.Except(new[] { this.Game.CurrentRound }))
+            {
+                <div>
+                    Round @(1 * this.Game.Rounds.IndexOf(round))
+                    <br />
 
-                        <ul>
-                            @foreach (var card in round.Cards)
-                            {
-                                <li>
-                                    @card.Key.Name:
-                                    <kbd>
-                                        @if (round.IsRevealed == true)
-                                        {
-                                            @card.Value
-                                        }
-                                        else
-                                        {
-                                            @:👍
-                                        }
-                                    </kbd>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                }
-            </div>
-        }
-    </div>*@
+                    <ul>
+                        @foreach (var card in round.Cards)
+                        {
+                            <li>
+                                @card.Key.Name:
+                                <kbd>
+                                    @if (round.IsRevealed == true)
+                                    {
+                                        @card.Value
+                                    }
+                                    else
+                                    {
+                                        @:👍
+                                    }
+                                </kbd>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    }
+</div>*@

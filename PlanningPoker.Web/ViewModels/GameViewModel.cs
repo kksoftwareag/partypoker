@@ -1,13 +1,13 @@
-﻿using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components;
-using PlanningPoker.Web.Game;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components;
+using PlanningPoker.Web.Game;
 
 namespace PlanningPoker.Web.ViewModels
 {
-    public class GameViewModel : ComponentBase
+    public class GameViewModel : ComponentBase, IDisposable
     {
         [Parameter]
         public string Hash { get; set; }
@@ -72,16 +72,29 @@ namespace PlanningPoker.Web.ViewModels
             this.Game.RevealCards();
         }
 
+        protected readonly TimeSpan nameChangeTimes = TimeSpan.FromSeconds(3);
+        protected DateTime lastNameChange = DateTime.MinValue;
         protected async Task NameChanged(ChangeEventArgs e)
         {
+            if (this.lastNameChange.Add(this.nameChangeTimes) > DateTime.Now)
+            {
+                return;
+            }
+
             this.PlayerName = (string)e.Value;
             this.Game.ChangePlayersName(this.Player, this.PlayerName);
-            await this.LocalStorage.SetItemAsync(nameof(Player), this.Player);
+            this.lastNameChange = DateTime.Now;
+            await this.LocalStorage.SetItemAsync(nameof(this.Player), this.Player);
         }
 
         private void Game_Changed(object sender, EventArgs e)
         {
             _ = this.InvokeAsync(() => this.StateHasChanged());
+        }
+
+        public void Dispose()
+        {
+            //this.Game.RemovePlayer(this.Player);
         }
     }
 }
