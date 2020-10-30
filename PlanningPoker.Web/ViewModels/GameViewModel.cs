@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using PlanningPoker.Web.Game;
 
 namespace PlanningPoker.Web.ViewModels
@@ -73,6 +74,14 @@ namespace PlanningPoker.Web.ViewModels
             this.Game.Join(this.Player);
 
             this.StateHasChanged();
+        }
+
+        protected void OnKeyDown(KeyboardEventArgs eventArgs)
+        {
+            if (this.Player is not null && this.Game?.CurrentRound?.IsRevealed == false && this.Game.CardDeck.Contains(eventArgs.Key) == true)
+            {
+                this.VoteCard(eventArgs.Key);
+            }
         }
 
         protected void VoteCard(string card)

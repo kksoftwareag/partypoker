@@ -1,86 +1,88 @@
 ﻿@page "/{Hash}"
 @inherits GameViewModel
 
-<div class="row">
-    <div class="col-auto">
-        <label for="player-name">Your name:</label>
-    </div>
-
-    <div class="col">
-        @if (this.Player != null)
-        {
-            <input id="player-name" class="form-control" type="text" value="@this.PlayerName" @onchange="this.NameChanged" />
-        }
-    </div>
-</div>
-
-@if (this.Game != null)
-{
-    <div class="row mt-3">
+<div id="game" @onkeydown="this.OnKeyDown">
+    <div class="row">
         <div class="col-auto">
-            <button class="btn btn-primary" disabled="@(this.Game.CurrentRound == null || this.Game.CurrentRound.Cards.Any() == false || this.Game.CurrentRound.IsRevealed == true)" @onclick="this.RevealCards">🃏 Reveal Cards</button>
+            <label for="player-name">Your name:</label>
         </div>
-        <div class="col-auto">
-            <button class="btn btn-success" disabled="@(this.Game.CurrentRound?.IsRevealed == false)" @onclick="this.StartNewRound">✅ Start Round @(1 + this.Game.RoundNumber)</button>
-        </div>
-    </div>
-}
 
-@if (this.Game?.CurrentRound != null)
-{
-    <div class="row mt-3">
         <div class="col">
-            @foreach (var player in this.Game.Players)
+            @if (this.Player != null)
             {
-                <div class="player-container">
-                    <div class="player">
-                        @player.Name
-                    </div>
+                <input id="player-name" class="form-control" type="text" value="@this.PlayerName" @onchange="this.NameChanged" @onkeydown:stopPropagation="true" />
+            }
+        </div>
+    </div>
 
-                    <div class="player-card">
-                        @if (this.Game.CurrentRound.Cards.ContainsKey(player) == true)
-                        {
-                            if (this.Game.CurrentRound.IsRevealed == true)
+    @if (this.Game != null)
+    {
+        <div class="row mt-3">
+            <div class="col-auto">
+                <button class="btn btn-primary" disabled="@(this.Game.CurrentRound == null || this.Game.CurrentRound.Cards.Any() == false || this.Game.CurrentRound.IsRevealed == true)" @onclick="this.RevealCards">🃏 Reveal Cards</button>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-success" disabled="@(this.Game.CurrentRound?.IsRevealed == false)" @onclick="this.StartNewRound">✅ Start Round @(1 + this.Game.RoundNumber)</button>
+            </div>
+        </div>
+    }
+
+    @if (this.Game?.CurrentRound != null)
+    {
+        <div class="row mt-3">
+            <div class="col">
+                @foreach (var player in this.Game.Players)
+                {
+                    <div class="player-container">
+                        <div class="player">
+                            @player.Name
+                        </div>
+
+                        <div class="player-card">
+                            @if (this.Game.CurrentRound.Cards.ContainsKey(player) == true)
                             {
-                                <div class="player-card-revealed">
-                                    @this.Game.CurrentRound.Cards[player]
-                                </div>
+                                if (this.Game.CurrentRound.IsRevealed == true)
+                                {
+                                    <div class="player-card-revealed">
+                                        @this.Game.CurrentRound.Cards[player]
+                                    </div>
+                                }
+                                else
+                                {
+                                    @:🃏
+                                }
                             }
                             else
                             {
-                                @:🃏
+                                @:❌
                             }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="row mt-3">
+        <div class="col">
+            @if (this.Game != null && this.Game.CurrentRound != null && this.Game.CurrentRound.IsRevealed == false && this.Player != null)
+            {
+                @foreach (var card in this.Game.CardDeck)
+                {
+                    <button class="btn btn-sm btn-outline-secondary mx-1" @onclick="(() => this.VoteCard(card))">
+                        @if (card == this.CardChoosenInCurrentRound)
+                        {
+                            <strong style="color: white;">
+                                @card
+                            </strong>
                         }
                         else
                         {
-                            @:❌
+                            @card
                         }
-                    </div>
-                </div>
+                    </button>
+                }
             }
         </div>
-    </div>
-}
-
-<div class="row mt-3">
-    <div class="col">
-        @if (this.Game != null && this.Game.CurrentRound != null && this.Game.CurrentRound.IsRevealed == false && this.Player != null)
-        {
-            @foreach (var card in this.Game.CardDeck)
-            {
-                <button class="btn btn-sm btn-outline-secondary mx-1" @onclick="(() => this.VoteCard(card))">
-                    @if (card == this.CardChoosenInCurrentRound)
-                    {
-                        <strong style="color: white;">
-                            @card
-                        </strong>
-                    }
-                    else
-                    {
-                        @card
-                    }
-                </button>
-            }
-        }
     </div>
 </div>
