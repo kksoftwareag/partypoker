@@ -72,6 +72,11 @@ namespace PlanningPoker.Web.Game
 
         internal void Vote(Player player, string card)
         {
+            if (this.Players.Contains(player) == false)
+            {
+                this.Players.Add(player);
+            }
+
             this.CurrentRound.Cards[player] = card;
             this.RaiseChanged();
         }
