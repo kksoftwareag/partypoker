@@ -117,11 +117,6 @@ namespace PlanningPoker.Web.ViewModels
         private void Game_Changed(object sender, EventArgs e)
         {
             _ = this.InvokeAsync(() => this.StateHasChanged());
-
-            if (this.Game.Players.Contains(this.Player) == false)
-            {
-                this.Game.Join(this.Player);
-            }
         }
 
         public void Dispose()
