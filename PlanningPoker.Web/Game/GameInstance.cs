@@ -42,6 +42,8 @@ namespace PlanningPoker.Web.Game
             {
                 this.Players.Add(player);
             }
+
+            this.RaiseChanged();
         }
 
         private void RaiseChanged()
