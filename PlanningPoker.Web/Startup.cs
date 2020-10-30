@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Toolbelt.Extensions.DependencyInjection;
 
 namespace PlanningPoker.Web
 {
@@ -28,6 +29,7 @@ namespace PlanningPoker.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCssLiveReload();
             }
             else
             {

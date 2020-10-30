@@ -14,6 +14,7 @@
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
     <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <PackageReference Include="Toolbelt.AspNetCore.CssLiveReloader" Version="1.1.0" />
   </ItemGroup>
 
 </Project>
