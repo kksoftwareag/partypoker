@@ -1,4 +1,5 @@
 {
+    "defaultDestination": "wwwroot/lib/",
     "version": "1.0",
     "defaultProvider": "cdnjs",
     "libraries": [
@@ -9,6 +10,14 @@
                 "css/bootstrap.css",
                 "js/bootstrap.min.js.map",
                 "css/bootstrap.min.css"
+            ]
+        },
+        {
+            "destination": "wwwroot/lib/bootstrap-dark",
+            "provider": "unpkg",
+            "library": "@forevolve/bootstrap-dark@1.0.0-alpha.1091",
+            "files": [
+                "dist/css/bootstrap-dark.css"
             ]
         }
     ]
