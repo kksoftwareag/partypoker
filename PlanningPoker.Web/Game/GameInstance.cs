@@ -2,8 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace PlanningPoker.Web.Game
 {
@@ -55,7 +53,11 @@ namespace PlanningPoker.Web.Game
         {
             if (GameInstance.instances.TryGetValue(hash, out var instance) == false)
             {
-                instance = new GameInstance();
+                instance = new GameInstance()
+                {
+                    Hash = hash
+                };
+
                 GameInstance.instances[hash] = instance;
             }
 
@@ -83,6 +85,18 @@ namespace PlanningPoker.Web.Game
         internal void RevealCards()
         {
             this.CurrentRound.IsRevealed = true;
+            this.RaiseChanged();
+        }
+
+        internal void RemovePlayer(Player player)
+        {
+            this.Players.Remove(player);
+
+            if (this.Players.Any() == false)
+            {
+                GameInstance.instances.Remove(this.Hash, out var _);
+            }
+
             this.RaiseChanged();
         }
     }

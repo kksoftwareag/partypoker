@@ -1,0 +1,21 @@
+.player-container {
+    border-radius: 5px 5px;
+    border-width: 1px;
+    border-color: #FFF;
+    background-color: transparent;
+    border-style: solid;
+    display: inline-block;
+}
+
+.player {
+    display: inline;
+    margin-right: 5px;
+    margin-left: 10px;
+}
+
+.player-card {
+    padding: 5px 5px;
+    background-color: #334;
+    display: inline-block;
+    border-radius: 0px 5px 5px 0px;
+}
