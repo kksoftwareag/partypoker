@@ -5,6 +5,7 @@
     background-color: transparent;
     border-style: solid;
     display: inline-block;
+    margin-right: 10px;
 }
 
 .player {
@@ -18,4 +19,14 @@
     background-color: #334;
     display: inline-block;
     border-radius: 0px 5px 5px 0px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.player-card-revealed {
+    display: inline-block;
+    color: #FFF;
+    font-weight: bold;
+    margin-left: 5px;
+    margin-right: 5px;
 }

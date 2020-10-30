@@ -18,7 +18,25 @@ namespace PlanningPoker.Web.ViewModels
         public string PlayerName { get; protected set; }
 
         public Player Player { get; private set; }
+
         public GameInstance Game { get; private set; }
+
+        public string CardChoosenInCurrentRound
+        {
+            get
+            {
+                var cards = this.Game?.CurrentRound?.Cards;
+                if (cards is not null && this.Player is not null)
+                {
+                    if (cards.ContainsKey(this.Player) == true)
+                    {
+                        return this.Game.CurrentRound.Cards[this.Player];
+                    }
+                }
+
+                return null;
+            }
+        }
 
         protected override void OnInitialized()
         {

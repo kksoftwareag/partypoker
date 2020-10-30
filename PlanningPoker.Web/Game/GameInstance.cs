@@ -11,8 +11,6 @@ namespace PlanningPoker.Web.Game
 
         private static readonly ConcurrentDictionary<string, GameInstance> instances = new ConcurrentDictionary<string, GameInstance>();
 
-        private readonly DateTime launched = DateTime.Now;
-
         public static List<string[]> Decks { get; } = new List<string[]>()
         {
             new []{ "❓", "0", "0.5", "1", "2", "3", "5", "8", "13", "20", "40", "100", "☕" }

@@ -35,10 +35,14 @@ namespace PlanningPoker.Web.Game
 
         public static bool operator ==(Player left, Player right)
         {
+            if (left is null && right is null)
+            {
+                return true;
+            }
+
             return left?.Equals(right) == true;
         }
 
         public static bool operator !=(Player left, Player right) => left == right == false;
-
     }
 }

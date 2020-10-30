@@ -18,10 +18,10 @@
 {
     <div class="row mt-3">
         <div class="col-auto">
-            <button class="btn btn-primary" disabled="@(this.Game.CurrentRound == null || this.Game.CurrentRound.Cards.Any() == false || this.Game.CurrentRound.IsRevealed == true)" @onclick="this.RevealCards">Reveal Cards</button>
+            <button class="btn btn-primary" disabled="@(this.Game.CurrentRound == null || this.Game.CurrentRound.Cards.Any() == false || this.Game.CurrentRound.IsRevealed == true)" @onclick="this.RevealCards">🃏 Reveal Cards</button>
         </div>
         <div class="col-auto">
-            <button class="btn btn-success" disabled="@(this.Game.CurrentRound?.IsRevealed == false)" @onclick="this.StartNewRound">New Round</button>
+            <button class="btn btn-success" disabled="@(this.Game.CurrentRound?.IsRevealed == false)" @onclick="this.StartNewRound">✅ New Round</button>
         </div>
     </div>
 }
@@ -50,7 +50,9 @@
                         {
                             if (this.Game.CurrentRound.IsRevealed == true)
                             {
-                                @this.Game.CurrentRound.Cards[player]
+                                <div class="player-card-revealed">
+                                    @this.Game.CurrentRound.Cards[player]
+                                </div>
                             }
                             else
                             {
@@ -69,13 +71,26 @@
 }
 
 <div class="row mt-3">
-    @if (this.Game != null && this.Game.CurrentRound != null && this.Game.CurrentRound.IsRevealed == false)
-    {
-        @foreach (var card in this.Game.CardDeck)
+    <div class="col">
+        @if (this.Game != null && this.Game.CurrentRound != null && this.Game.CurrentRound.IsRevealed == false && this.Player != null)
         {
-            <button class="btn btn-sm btn-outline-secondary mx-1" @onclick="(() => this.VoteCard(card))">@card</button>
+            @foreach (var card in this.Game.CardDeck)
+            {
+                <button id="btn-@card" class="btn btn-sm btn-outline-secondary mx-1" @onclick="(() => this.VoteCard(card))">
+                    @if (card == this.CardChoosenInCurrentRound)
+                    {
+                        <strong>
+                            @card
+                        </strong>
+                    }
+                    else
+                    {
+                        @card
+                    }
+                </button>
+            }
         }
-    }
+    </div>
 </div>
 
 @*<div class="row mt-3">
