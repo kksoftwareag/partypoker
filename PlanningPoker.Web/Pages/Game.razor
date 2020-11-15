@@ -24,6 +24,9 @@
             <div class="col-auto">
                 <button class="btn btn-success" disabled="@(this.Game.CurrentRound?.IsRevealed == false)" @onclick="this.StartNewRound">✅ Start Round @(1 + this.Game.RoundNumber)</button>
             </div>
+            <div class="col-auto">
+                <a class="btn btn-info" target="_blank" href="https://t.me/share/url?url=https://planningpoker.party/@this.Hash&text=Planning%20Poker">🔗 Share via Telegram</a>
+            </div>
         </div>
     }
 
