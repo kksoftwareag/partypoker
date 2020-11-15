@@ -22,6 +22,7 @@ namespace PlanningPoker.Web
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazoredLocalStorage(config => config.JsonSerializerOptions.WriteIndented = true);
+            services.AddScoped<UserState>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

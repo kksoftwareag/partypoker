@@ -1,17 +1,28 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@inject UserState UserState
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">PlanningPoker</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+<div class="@this.NavMenuCssClass" @onclick="this.ToggleNavMenu">
     <ul class="nav flex-column">
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> New Game
+                <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
+
+        @if (this.UserState.CurrentGame != null)
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="@this.UserState.CurrentGame" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Current Game
+                </NavLink>
+            </li>
+        }
     </ul>
 </div>
 
@@ -20,8 +31,13 @@
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
+    protected override void OnInitialized()
+    {
+        this.UserState.GamesChangedEvent += (s, e) => _ = this.InvokeAsync(() => this.StateHasChanged());
+    }
+
     private void ToggleNavMenu()
     {
-        collapseNavMenu = !collapseNavMenu;
+        this.collapseNavMenu = !collapseNavMenu;
     }
 }

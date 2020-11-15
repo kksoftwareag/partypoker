@@ -16,6 +16,9 @@ namespace PlanningPoker.Web.ViewModels
         [Inject]
         public ILocalStorageService LocalStorage { get; set; }
 
+        [Inject]
+        public UserState UserState { get; set; }
+
         public string PlayerName { get; protected set; }
 
         public Player Player { get; private set; }
@@ -43,6 +46,8 @@ namespace PlanningPoker.Web.ViewModels
         {
             this.Game = GameInstance.Find(this.Hash);
             this.Game.Changed += this.Game_Changed;
+
+            this.UserState.NavigateToGameHash(this.Hash);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

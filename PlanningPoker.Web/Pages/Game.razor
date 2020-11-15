@@ -69,7 +69,7 @@
             {
                 @foreach (var card in this.Game.CardDeck)
                 {
-                    <button class="btn btn-sm btn-outline-secondary mr-2" @onclick="(() => this.VoteCard(card))">
+                    <button class="btn btn-outline-secondary mr-2" @onclick="(() => this.VoteCard(card))">
                         @if (card == this.CardChoosenInCurrentRound)
                         {
                             <strong style="color: white;">
