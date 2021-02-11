@@ -33,8 +33,11 @@ namespace PlanningPoker.Web
             {
                 OnPrepareResponse = context =>
                 {
-                    // Cache unchanged scripts, styles and images for 1 year
+                    // Cache unchanged static file for 1 year
                     if (String.IsNullOrEmpty(context.Context.Request.Query["v"]) == false ||
+                        context.Context.Request.Path.ToString().Contains("css", StringComparison.OrdinalIgnoreCase) ||
+                        context.Context.Request.Path.ToString().Contains("woff", StringComparison.OrdinalIgnoreCase) ||
+                        context.Context.Request.Path.ToString().Contains("ico", StringComparison.OrdinalIgnoreCase) ||
                         context.Context.Request.Path.ToString().Contains("png", StringComparison.OrdinalIgnoreCase))
                     {
                         context.Context.Response.Headers.Add("cache-control", new[] { "public,max-age=31536000" });
