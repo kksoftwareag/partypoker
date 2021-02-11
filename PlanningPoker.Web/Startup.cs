@@ -19,6 +19,7 @@ namespace PlanningPoker.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCompression();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazoredLocalStorage(config => config.JsonSerializerOptions.WriteIndented = true);
@@ -27,6 +28,23 @@ namespace PlanningPoker.Web
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = context =>
+                {
+                    // Cache unchanged scripts, styles and images for 1 year
+                    if (String.IsNullOrEmpty(context.Context.Request.Query["v"]) == false ||
+                        context.Context.Request.Path.ToString().Contains("png", StringComparison.OrdinalIgnoreCase))
+                    {
+                        context.Context.Response.Headers.Add("cache-control", new[] { "public,max-age=31536000" });
+                        context.Context.Response.Headers.Add("Expires", new[] { DateTime.UtcNow.AddYears(1).ToString("R") }); // Format RFC1123
+                    }
+                }
+            });
+            // call .UseStaticFiles() twice to keep blazor working
+            app.UseStaticFiles();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
