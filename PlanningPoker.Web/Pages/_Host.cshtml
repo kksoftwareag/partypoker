@@ -12,9 +12,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>K&amp;K - PlanningPoker</title>
     <base href="~/" />
-    <link href="~/lib/bootstrap-dark/dist/css/bootstrap-dark.css" rel="stylesheet" />
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="css/game.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-dark/dist/css/bootstrap-dark.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" asp-append-version="true" />
+    <link href="css/site.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" asp-append-version="true" />
+    <link href="css/game.css" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" asp-append-version="true" />
 </head>
 <body>
     <app>
@@ -32,6 +32,6 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <script src="_framework/blazor.server.js"></script>
+    <script src="_framework/blazor.server.js" asp-append-version="true"></script>
 </body>
 </html>
