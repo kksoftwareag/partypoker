@@ -1,5 +1,7 @@
 # Planning Poker in Blazor
 
+[![Build Status](https://jenkins.lyra.bz/buildStatus/icon?job=planning+poker+build)](https://jenkins.lyra.bz/job/planning%20poker%20build/)
+
 This repository contains a real time planning poker web application based on [ASP.NET Core Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor).
 
 You can check out a live demo [over here](https://www.planningpoker.party/demo).
