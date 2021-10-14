@@ -1,0 +1,31 @@
+
+trigger:
+- master
+
+pool:
+  name: Docker
+
+jobs:
+- job: 'Dockerize_WebApp'
+  steps:
+  - task: Docker@2
+    displayName: login
+    inputs:
+      containerRegistry: 'Azure Container Registry'
+      command: 'login'
+
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'Azure Container Registry'
+      repository: 'zeity'
+      command: 'buildAndPush'
+      Dockerfile: '**/Dockerfile'
+      tags: |
+        latest
+        $(Build.BuildNumber)
+
+  - task: Docker@2
+    displayName: logout
+    inputs:
+      containerRegistry: 'Azure Container Registry'
+      command: 'logout'
