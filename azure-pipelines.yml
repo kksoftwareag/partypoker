@@ -17,7 +17,7 @@ jobs:
   - task: Docker@2
     inputs:
       containerRegistry: 'Azure Container Registry'
-      repository: 'zeity'
+      repository: 'planningpoker'
       command: 'buildAndPush'
       Dockerfile: '**/Dockerfile'
       tags: |
