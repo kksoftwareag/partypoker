@@ -1,12 +1,4 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:55721",
-      "sslPort": 44349
-    }
-  },
   "profiles": {
     "PlanningPoker.Web": {
       "commandName": "Project",
