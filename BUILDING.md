@@ -47,8 +47,7 @@ output:
 [...]
 => => writing image sha256:bdf9fe339295350b11beadb3ee04e1ed92ea74c330c23b85c0a1f17537886471                       0.0s
 ```
-copy the sha256 hash of the built image and then run the next command with that hash.
-
+6. Copy the sha256 hash of the built image and then run the next command with that hash.
 5. Run the image
 	* `docker run bdf9fe339295350b11beadb3ee04e1ed92ea74c330c23b85c0a1f17537886471`
 
