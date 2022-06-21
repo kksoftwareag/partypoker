@@ -8,12 +8,15 @@ You can check out a live demo [over here](https://www.planningpoker.party/demo).
 
 ## Prerequisites
 
-- [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
-- [Visual Studio 2019](https://visualstudio.microsoft.com/downloads/) or [Visual Studio Code](https://code.visualstudio.com/Download).
+- [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) or [Visual Studio Code](https://code.visualstudio.com/Download).
 
-## How to run
+## How to in run in Visual Studio
 1. Clone or download.
-2. Open the solution in Visual Studio and press F5.
+2. Open the solution in Visual Studio 2022+ and press F5. All dependencies will be installed and a browser window will be openend
+
+## How to run in the console
+Please refer to [BUILDING.md](BUILDING.md)
 
 ## Contributing
 Pull requests are welcome.
