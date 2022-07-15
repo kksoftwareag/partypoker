@@ -20,8 +20,8 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release
     - name: Zip Published Files
-      run: zip -j -r ${{ github.event.repository.name }}.zip partypoker/PlanningPoker.Web/bin/Release/net6.0/publish/*
-#      run: tar zvcf ${{ github.event.repository.name }}.tar.gz partypoker/PlanningPoker.Web/bin/Release/net6.0/publish/*
+#      run: zip -j -r ${{ github.event.repository.name }}.zip partypoker/PlanningPoker.Web/bin/Release/net6.0/publish/*
+      run: tar zvcf ${{ github.event.repository.name }}.tar.gz partypoker/PlanningPoker.Web/bin/Release/net6.0/publish/*
     - name: Delete Release
       uses: larryjoelane/delete-release-action@v1.0.24
       with:
