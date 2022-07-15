@@ -1,0 +1,47 @@
+name: release version
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+#    container: dotnet-sdk:6.0
+    container: mcr.microsoft.com/dotnet/sdk:6.0
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Publish
+      run: dotnet publish -c Release
+    - name: Zip Published Files
+      run: zip -j -r ${{ github.event.repository.name }}.zip bin/Release/net6.0/publish/*
+    - name: Delete Release
+      uses: larryjoelane/delete-release-action@v1.0.24
+      with:
+        release-name: latest
+        token: ${{ github.token }}
+    - name: release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: true
+        release_name: latest
+        tag_name: latest
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: upload release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./${{ github.event.repository.name }}.zip
+        asset_name: ${{ github.event.repository.name }}.zip
+        asset_content_type: application/gzip
