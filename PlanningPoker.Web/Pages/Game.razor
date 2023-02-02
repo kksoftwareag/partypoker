@@ -27,6 +27,15 @@
             <div class="col-auto">
                 <a class="btn btn-info" target="_blank" href="https://t.me/share/url?url=https://planningpoker.party/@this.Hash&text=Planning%20Poker">🔗 Share via Telegram</a>
             </div>
+            @if (this.Player != null)
+            {
+                <div class="col-auto">
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="customSwitch1" checked="@this.Player.HasCards" @onchange="this.HasCardsChanged">
+                        <label class="custom-control-label" for="customSwitch1">Do I participate?</label>
+                    </div>
+                </div>
+            }
         </div>
     }
 
@@ -42,22 +51,29 @@
                         </div>
 
                         <div class="player-card">
-                            @if (this.Game.CurrentRound.Cards.ContainsKey(player) == true)
+                            @if (player.HasCards == true)
                             {
-                                if (this.Game.CurrentRound.IsRevealed == true)
+                                if (this.Game.CurrentRound.Cards.ContainsKey(player) == true)
                                 {
-                                    <div class="player-card-revealed">
-                                        @this.Game.CurrentRound.Cards[player]
-                                    </div>
+                                    if (this.Game.CurrentRound.IsRevealed == true)
+                                    {
+                                        <div class="player-card-revealed">
+                                            @this.Game.CurrentRound.Cards[player]
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @:🃏
+                                    }
                                 }
                                 else
                                 {
-                                    @:🃏
+                                    @:❌
                                 }
                             }
                             else
                             {
-                                @:❌
+                                @:👑
                             }
                         </div>
                     </div>
@@ -66,26 +82,29 @@
         </div>
     }
 
-    <div class="row mt-3">
-        <div class="col">
-            @if (this.Game != null && this.Game.CurrentRound != null && this.Game.CurrentRound.IsRevealed == false && this.Player != null)
-            {
-                @foreach (var card in this.Game.CardDeck)
+    @if (this.Player != null && this.Player.HasCards == true)
+    {
+        <div class="row mt-3">
+            <div class="col">
+                @if (this.Game != null && this.Game.CurrentRound != null && this.Game.CurrentRound.IsRevealed == false && this.Player != null)
                 {
-                    <button class="btn btn-outline-secondary mr-2" @onclick="(() => this.VoteCard(card))">
-                        @if (card == this.CardChoosenInCurrentRound)
-                        {
-                            <strong style="color: white;">
+                    @foreach (var card in this.Game.CardDeck)
+                    {
+                        <button class="btn btn-outline-secondary mr-2" @onclick="(() => this.VoteCard(card))">
+                            @if (card == this.CardChoosenInCurrentRound)
+                            {
+                                <strong style="color: white;">
+                                    @card
+                                </strong>
+                            }
+                            else
+                            {
                                 @card
-                            </strong>
-                        }
-                        else
-                        {
-                            @card
-                        }
-                    </button>
+                            }
+                        </button>
+                    }
                 }
-            }
+            </div>
         </div>
-    </div>
+    }
 </div>

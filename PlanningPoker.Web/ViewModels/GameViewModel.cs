@@ -119,6 +119,11 @@ namespace PlanningPoker.Web.ViewModels
             await this.LocalStorage.SetItemAsync(nameof(this.Player), this.Player);
         }
 
+        protected void HasCardsChanged(ChangeEventArgs e)
+        {
+            this.Game.AllowVote(this.Player, (bool)e.Value);
+        }
+
         private void Game_Changed(object sender, EventArgs e)
         {
             _ = this.InvokeAsync(() => this.StateHasChanged());

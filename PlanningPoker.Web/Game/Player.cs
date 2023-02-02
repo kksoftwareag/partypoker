@@ -8,6 +8,8 @@ namespace PlanningPoker.Web.Game
         public string Name { get; set; }
         public Guid Secret { get; set; }
 
+        public bool HasCards { get; set; } = true;
+
         public bool Equals([AllowNull] Player other)
         {
             if (other is null)
