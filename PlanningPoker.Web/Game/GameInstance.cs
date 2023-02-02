@@ -44,6 +44,12 @@ namespace PlanningPoker.Web.Game
             this.RaiseChanged();
         }
 
+        internal void AllowVote(Player player, bool canVote = true)
+        {
+            player.HasCards = canVote;
+            this.RaiseChanged();
+        }
+
         private void RaiseChanged()
         {
             this.Changed?.Invoke(this, EventArgs.Empty);
