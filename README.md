@@ -8,7 +8,7 @@ You can check out a live demo [over here](https://www.planningpoker.party/demo).
 
 ## Prerequisites
 
-- [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) or [Visual Studio Code](https://code.visualstudio.com/Download).
 
 ## How to in run in Visual Studio
