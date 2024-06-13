@@ -1,10 +1,10 @@
 # Building Planning Poker
 ## Requirements
-This application is based on Microsoft .NET Core LTS. You need to have the SDK installed to build the app.
+This application is based on Microsoft .NET Core 8 LTS. You need to have the SDK installed to build the app.
 
 ## Classic .NET Build
 ### Preparation
-1. Install the version of .NET Core SDK as documented the project file in the XML tag `TargetFramework`. Currently it's .NET 6.
+1. Install the version of .NET Core SDK as documented the project file in the XML tag `TargetFramework`. Currently it's .NET 8.
 	* Installation instructions
 		* [Windows](https://docs.microsoft.com/en-us/dotnet/core/install/windows?tabs=net60)
 		* [macOS](https://docs.microsoft.com/en-us/dotnet/core/install/macos)
@@ -47,8 +47,8 @@ output:
 [...]
 => => writing image sha256:bdf9fe339295350b11beadb3ee04e1ed92ea74c330c23b85c0a1f17537886471                       0.0s
 ```
-6. Copy the sha256 hash of the built image and then run the next command with that hash.
-5. Run the image
+5. Copy the sha256 hash of the built image and then run the next command with that hash.
+6. Run the image
 	* `docker run bdf9fe339295350b11beadb3ee04e1ed92ea74c330c23b85c0a1f17537886471`
 
 ### Option B: docker-compose
