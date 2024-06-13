@@ -3,11 +3,10 @@ name: release
 on:
   push:
     branches: [ "master" ]
-  schedule:
-    - cron: '0 3 * * 6'
 
 jobs:
-  build:
+
+  build_docker:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,3 +32,38 @@ jobs:
           file: Dockerfile
           tags: lyra1337/partypoker:latest
 
+  build_release:
+
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/dotnet/sdk:8.0
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Publish
+      run: dotnet publish -c Release
+    - name: Zip Published Files
+      run: tar zvcf ${{ github.event.repository.name }}.tar.gz PlanningPoker.Web/bin/Release/net8.0/publish/*
+    - name: Delete Release
+      uses: larryjoelane/delete-release-action@v1.0.24
+      with:
+        release-name: latest
+        token: ${{ github.token }}
+    - name: release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: true
+        release_name: latest
+        tag_name: latest
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    - name: upload release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./${{ github.event.repository.name }}.tar.gz
+        asset_name: ${{ github.event.repository.name }}-dotnet-8.0.tar.gz
+        asset_content_type: application/gzip
