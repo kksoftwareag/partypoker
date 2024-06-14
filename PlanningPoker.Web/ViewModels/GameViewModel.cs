@@ -57,12 +57,18 @@ namespace PlanningPoker.Web.ViewModels
                 return;
             }
 
-            Player player;
+            Player player = null;
             if (await this.LocalStorage.ContainKeyAsync(nameof(Player)) == true)
             {
-                player = await this.LocalStorage.GetItemAsync<Player>(nameof(Player));
+                var loadedPlayer = await this.LocalStorage.GetItemAsync<Player>(nameof(Player));
+
+                if (loadedPlayer.Secret != Guid.Empty)
+                {
+                    this.Player = loadedPlayer;
+                }
             }
-            else
+
+            if (player is null)
             {
                 player = new Player()
                 {
