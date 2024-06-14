@@ -104,18 +104,10 @@ namespace PlanningPoker.Web.ViewModels
             this.Game.RevealCards();
         }
 
-        protected readonly TimeSpan nameChangeTimes = TimeSpan.FromSeconds(3);
-        protected DateTime lastNameChange = DateTime.MinValue;
         protected async Task NameChanged(ChangeEventArgs e)
         {
-            if (this.lastNameChange.Add(this.nameChangeTimes) > DateTime.Now)
-            {
-                return;
-            }
-
             this.PlayerName = (string)e.Value;
             this.Game.ChangePlayersName(this.Player, this.PlayerName);
-            this.lastNameChange = DateTime.Now;
             await this.LocalStorage.SetItemAsync(nameof(this.Player), this.Player);
         }
 
