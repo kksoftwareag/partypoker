@@ -1,0 +1,24 @@
+---
+
+- name: Ensure project config directory exists
+  file:
+    path: '{{ project_config_dir }}'
+    state: directory
+
+- name: Add docker-compose.yml file
+  template:
+    src: 'docker-compose.yml.j2'
+    dest: '{{ project_config_dir }}/docker-compose.yml'
+  register: docker_compose_file
+
+- name: Ensure docker services stopped
+  community.docker.docker_compose_v2:
+    project_src: '{{ project_config_dir }}'
+    state: absent
+  when: docker_compose_file.changed
+
+- name: Ensure docker services started
+  community.docker.docker_compose_v2:
+    project_src: '{{ project_config_dir }}'
+    pull: always
+    build: never

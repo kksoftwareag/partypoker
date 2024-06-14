@@ -1,0 +1,13 @@
+---
+- hosts: all
+  roles:
+    - role: geerlingguy.docker
+      docker_edition: 'ce'
+
+    - role: reverse_proxy
+
+    - role: watchtower
+
+    - role: partypoker
+      primary_domain: planningpoker.party
+      tags: app

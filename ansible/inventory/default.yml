@@ -1,0 +1,6 @@
+---
+
+all:
+  hosts:
+    prod:
+      ansible_host: 167.235.156.180 # 49.12.76.181 # planningpoker.party

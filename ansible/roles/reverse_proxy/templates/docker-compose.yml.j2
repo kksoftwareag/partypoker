@@ -1,0 +1,35 @@
+services:
+    reverse_proxy:
+        image: traefik:3.0
+        container_name: reverse_proxy
+        restart: always
+        command:
+            - "--log.level=DEBUG"
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=false"
+            - "--providers.docker.network=reverse_proxy"
+            - "--entrypoints.web.address=:80"
+            - "--entrypoints.websecure.address=:443"
+            - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+            - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+            - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+            - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+            - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+            - "--certificatesresolvers.myresolver.acme.email=softdev@kk-software.de"
+            - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+        labels:
+            - "traefik.enable=true"
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - "/opt/docker/reverse_proxy/letsencrypt:/letsencrypt"
+            - "/var/run/docker.sock:/var/run/docker.sock:ro"
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "3"
+
+networks:
+    default:
+        name: reverse_proxy

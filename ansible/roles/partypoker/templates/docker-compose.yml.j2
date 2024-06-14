@@ -1,0 +1,26 @@
+services:
+    partypoker:
+        image: lyra1337/partypoker:latest
+        container_name: partypoker
+        restart: always
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://+:80/
+        networks:
+            - reverse_proxy
+        logging:
+            options:
+                max-size: "10m"
+                max-file: "3"
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.partypoker.rule=Host(`{{ primary_domain }}`)"
+            - "traefik.http.routers.partypoker.entrypoints=websecure"
+            - "traefik.http.routers.partypoker.service=partypoker"
+            - "traefik.http.routers.partypoker.tls.certresolver=myresolver"
+            - "traefik.http.services.partypoker.loadbalancer.server.port=80"
+            - "com.centurylinklabs.watchtower.enable=true"
+
+networks:
+    reverse_proxy:
+        external: true
