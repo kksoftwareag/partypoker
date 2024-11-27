@@ -147,6 +147,7 @@ namespace PlanningPoker.Web.ViewModels
         public void Dispose()
         {
             this.Game.Changed -= this.Game_Changed;
+            this.Game.PlaySound -= this.Game_PlaySound;
             this.Game.RemovePlayer(this.Player);
         }
     }
