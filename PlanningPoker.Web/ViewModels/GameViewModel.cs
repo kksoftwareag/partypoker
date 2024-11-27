@@ -102,6 +102,16 @@ namespace PlanningPoker.Web.ViewModels
             this.Game.PlayBingSound();
         }
 
+        protected void PlayBingSoundForPlayer(Player player)
+        {
+            player.NotifyPlayer();
+
+            if (player != this.Player)
+            {
+                this.Player.NotifyPlayer();
+            }
+        }
+
         protected void OnKeyDown(KeyboardEventArgs eventArgs)
         {
             if (this.Player is not null && this.Game?.CurrentRound?.IsRevealed == false && this.Game.CardDeck.Contains(eventArgs.Key) == true)
