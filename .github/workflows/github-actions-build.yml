@@ -40,9 +40,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Publish
-      run: dotnet publish -c Release
+      run: dotnet publish -c Release -o PlanningPoker.Web/bin/publish
     - name: Zip Published Files
-      run: tar zvcf ${{ github.event.repository.name }}.tar.gz PlanningPoker.Web/bin/Release/net8.0/publish/*
+      run: tar zvcf ${{ github.event.repository.name }}.tar.gz PlanningPoker.Web/bin/publish*
     - name: Delete Release
       uses: larryjoelane/delete-release-action@v1.0.24
       with:
@@ -65,5 +65,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./${{ github.event.repository.name }}.tar.gz
-        asset_name: ${{ github.event.repository.name }}-dotnet-8.0.tar.gz
+        asset_name: ${{ github.event.repository.name }}.tar.gz
         asset_content_type: application/gzip
