@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using PlanningPoker.Web.Game;
 
 namespace PlanningPoker.Web.ViewModels
@@ -15,6 +16,9 @@ namespace PlanningPoker.Web.ViewModels
 
         [Inject]
         public ILocalStorageService LocalStorage { get; set; }
+
+        [Inject]
+        public IJSRuntime JsRuntime { get; set; }
 
         [Inject]
         public UserState UserState { get; set; }
@@ -46,8 +50,26 @@ namespace PlanningPoker.Web.ViewModels
         {
             this.Game = GameInstance.Find(this.Hash);
             this.Game.Changed += this.Game_Changed;
+            this.Game.PlaySound += Game_PlaySound;
 
             this.UserState.NavigateToGameHash(this.Hash);
+        }
+
+        private void Game_PlaySound(object sender, PlaySoundEventArgs e)
+        {
+            _ = this.InvokeAsync(async () =>
+            {
+                try
+                {
+                    await this.JsRuntime.InvokeVoidAsync("MediaPlayer.PlayAudio", e.SoundName);
+                }
+                catch { }
+            });
+        }
+
+        protected void PlayBingSound()
+        {
+            this.Game.PlayBingSound();
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)

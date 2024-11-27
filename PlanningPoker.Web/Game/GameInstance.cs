@@ -8,6 +8,7 @@ namespace PlanningPoker.Web.Game
     public class GameInstance
     {
         public event EventHandler Changed;
+        public event EventHandler<PlaySoundEventArgs> PlaySound;
 
         private static readonly ConcurrentDictionary<string, GameInstance> instances = new ConcurrentDictionary<string, GameInstance>();
 
@@ -103,6 +104,11 @@ namespace PlanningPoker.Web.Game
             }
 
             this.RaiseChanged();
+        }
+
+        internal void PlayBingSound()
+        {
+            this.PlaySound?.Invoke(this, new PlaySoundEventArgs("bing-sound"));
         }
     }
 }
