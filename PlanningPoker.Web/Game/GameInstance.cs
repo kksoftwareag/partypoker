@@ -87,6 +87,7 @@ namespace PlanningPoker.Web.Game
         {
             this.Rounds.Add(new Round());
             this.RaiseChanged();
+            this.RaisePlaySound("shuffle-cards");
         }
 
         internal void RevealCards()
