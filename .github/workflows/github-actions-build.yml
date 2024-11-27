@@ -35,7 +35,7 @@ jobs:
   build_release:
 
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/dotnet/sdk:8.0
+    container: mcr.microsoft.com/dotnet/sdk:9.0
 
     steps:
     - uses: actions/checkout@v3
