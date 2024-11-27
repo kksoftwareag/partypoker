@@ -30,6 +30,8 @@ namespace PlanningPoker.Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseResponseCompression();
+            app.UseResponseCaching();
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 OnPrepareResponse = context =>
