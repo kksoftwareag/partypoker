@@ -11,8 +11,4 @@
         <PackageReference Include="Toolbelt.AspNetCore.CssLiveReloader" Version="1.1.4" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="wwwroot\audio\" />
-    </ItemGroup>
-
 </Project>
