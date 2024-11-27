@@ -1,5 +1,7 @@
-﻿MediaPlayer = {
-    PlayAudio: function (filename) {
+﻿class MediaPlayer
+{
+    static PlayAudio(filename)
+    {
         let mp3 = '/audio/' + filename + '.mp3';
         let wav = '/audio/' + filename + '.wav';
 
