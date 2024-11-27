@@ -5,8 +5,15 @@ namespace PlanningPoker.Web.Game
 {
     public class Player : IEquatable<Player>
     {
+        public event EventHandler<PlaySoundEventArgs> PlaySound;
+
         public string Name { get; set; }
         public Guid Secret { get; set; }
+
+        internal void NotifyPlayer()
+        {
+            this.PlaySound?.Invoke(this, new PlaySoundEventArgs("bing-sound"));
+        }
 
         public bool Equals([AllowNull] Player other)
         {

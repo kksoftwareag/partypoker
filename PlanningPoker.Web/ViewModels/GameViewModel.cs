@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using PlanningPoker.Web.Game;
 
 namespace PlanningPoker.Web.ViewModels
@@ -15,6 +16,9 @@ namespace PlanningPoker.Web.ViewModels
 
         [Inject]
         public ILocalStorageService LocalStorage { get; set; }
+
+        [Inject]
+        public IJSRuntime JsRuntime { get; set; }
 
         [Inject]
         public UserState UserState { get; set; }
@@ -42,20 +46,15 @@ namespace PlanningPoker.Web.ViewModels
             }
         }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
+            await base.OnInitializedAsync();
+
             this.Game = GameInstance.Find(this.Hash);
             this.Game.Changed += this.Game_Changed;
+            this.Game.PlaySound += this.Game_PlaySound;
 
             this.UserState.NavigateToGameHash(this.Hash);
-        }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender == false)
-            {
-                return;
-            }
 
             Player player = null;
             if (await this.LocalStorage.ContainKeyAsync(nameof(Player)) == true)
@@ -81,10 +80,36 @@ namespace PlanningPoker.Web.ViewModels
 
             this.Player = player;
             this.PlayerName = player.Name;
+            this.Player.PlaySound += this.Game_PlaySound;
 
             this.Game.Join(this.Player);
+        }
 
-            this.StateHasChanged();
+        private void Game_PlaySound(object sender, PlaySoundEventArgs e)
+        {
+            _ = this.InvokeAsync(async () =>
+            {
+                try
+                {
+                    await this.JsRuntime.InvokeVoidAsync("MediaPlayer.PlayAudio", e.SoundName);
+                }
+                catch { }
+            });
+        }
+
+        protected void PlayBingSound()
+        {
+            this.Game.PlayBingSound();
+        }
+
+        protected void PlayBingSoundForPlayer(Player player)
+        {
+            player.NotifyPlayer();
+
+            if (player != this.Player)
+            {
+                this.Player.NotifyPlayer();
+            }
         }
 
         protected void OnKeyDown(KeyboardEventArgs eventArgs)
@@ -125,6 +150,8 @@ namespace PlanningPoker.Web.ViewModels
         public void Dispose()
         {
             this.Game.Changed -= this.Game_Changed;
+            this.Game.PlaySound -= this.Game_PlaySound;
+            this.Player.PlaySound -= this.Game_PlaySound;
             this.Game.RemovePlayer(this.Player);
         }
     }

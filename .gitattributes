@@ -1,0 +1,11 @@
+﻿.gitattributes      text        working-tree-encoding=UTF-8         eol=CRLF
+.gitignore          text        working-tree-encoding=UTF-8         eol=CRLF
+
+*.cs                text        working-tree-encoding=UTF-8         eol=CRLF
+*.razor             text        working-tree-encoding=UTF-8         eol=CRLF
+*.css               text        working-tree-encoding=UTF-8         eol=CRLF
+*.json              text        working-tree-encoding=UTF-8         eol=CRLF
+*.js                text        working-tree-encoding=UTF-8         eol=CRLF
+*.sln               text        working-tree-encoding=UTF-8         eol=CRLF
+*.csproj            text        working-tree-encoding=UTF-8         eol=CRLF
+*.ps1               text        working-tree-encoding=UTF-16LE      eol=CRLF
