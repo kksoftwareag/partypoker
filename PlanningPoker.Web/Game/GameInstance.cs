@@ -80,6 +80,7 @@ namespace PlanningPoker.Web.Game
 
             this.CurrentRound.Cards[player] = card;
             this.RaiseChanged();
+            this.RaisePlaySound("place-card");
         }
 
         internal void StartNewRound()
@@ -92,6 +93,7 @@ namespace PlanningPoker.Web.Game
         {
             this.CurrentRound.IsRevealed = true;
             this.RaiseChanged();
+            this.RaisePlaySound("turn-cards");
         }
 
         internal void RemovePlayer(Player player)
@@ -108,7 +110,12 @@ namespace PlanningPoker.Web.Game
 
         internal void PlayBingSound()
         {
-            this.PlaySound?.Invoke(this, new PlaySoundEventArgs("bing-sound"));
+            this.RaisePlaySound("bing-sound");
+        }
+
+        private void RaisePlaySound(string sound)
+        {
+            this.PlaySound?.Invoke(this, new PlaySoundEventArgs(sound));
         }
     }
 }
