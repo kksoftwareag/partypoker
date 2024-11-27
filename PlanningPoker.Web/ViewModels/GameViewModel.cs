@@ -46,38 +46,15 @@ namespace PlanningPoker.Web.ViewModels
             }
         }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
+            await base.OnInitializedAsync();
+
             this.Game = GameInstance.Find(this.Hash);
             this.Game.Changed += this.Game_Changed;
-            this.Game.PlaySound += Game_PlaySound;
+            this.Game.PlaySound += this.Game_PlaySound;
 
             this.UserState.NavigateToGameHash(this.Hash);
-        }
-
-        private void Game_PlaySound(object sender, PlaySoundEventArgs e)
-        {
-            _ = this.InvokeAsync(async () =>
-            {
-                try
-                {
-                    await this.JsRuntime.InvokeVoidAsync("MediaPlayer.PlayAudio", e.SoundName);
-                }
-                catch { }
-            });
-        }
-
-        protected void PlayBingSound()
-        {
-            this.Game.PlayBingSound();
-        }
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender == false)
-            {
-                return;
-            }
 
             Player player = null;
             if (await this.LocalStorage.ContainKeyAsync(nameof(Player)) == true)
@@ -103,10 +80,26 @@ namespace PlanningPoker.Web.ViewModels
 
             this.Player = player;
             this.PlayerName = player.Name;
+            this.Player.PlaySound += this.Game_PlaySound;
 
             this.Game.Join(this.Player);
+        }
 
-            this.StateHasChanged();
+        private void Game_PlaySound(object sender, PlaySoundEventArgs e)
+        {
+            _ = this.InvokeAsync(async () =>
+            {
+                try
+                {
+                    await this.JsRuntime.InvokeVoidAsync("MediaPlayer.PlayAudio", e.SoundName);
+                }
+                catch { }
+            });
+        }
+
+        protected void PlayBingSound()
+        {
+            this.Game.PlayBingSound();
         }
 
         protected void OnKeyDown(KeyboardEventArgs eventArgs)
@@ -148,6 +141,7 @@ namespace PlanningPoker.Web.ViewModels
         {
             this.Game.Changed -= this.Game_Changed;
             this.Game.PlaySound -= this.Game_PlaySound;
+            this.Player.PlaySound -= this.Game_PlaySound;
             this.Game.RemovePlayer(this.Player);
         }
     }

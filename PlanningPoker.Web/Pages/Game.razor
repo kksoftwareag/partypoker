@@ -40,6 +40,10 @@
                 @foreach (var player in this.Game.Players)
                 {
                     <div class="player-container">
+                        <div class="player-notify">
+                            <a href="javascript:void(0);" @onclick="(() => player.NotifyPlayer())">🔊</a>
+                        </div>
+
                         <div class="player">
                             @player.Name
                         </div>
@@ -62,6 +66,7 @@
                             {
                                 @:❌
                             }
+
                         </div>
                     </div>
                 }
