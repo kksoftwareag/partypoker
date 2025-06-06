@@ -102,6 +102,13 @@ app {
     padding-top: 1.1rem;
 }
 
+.hstack {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-self: stretch;
+}
+
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
 }

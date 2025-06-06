@@ -1,11 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using PlanningPoker.Web.Game;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PlanningPoker.Web.ViewModels
 {
@@ -28,6 +29,8 @@ namespace PlanningPoker.Web.ViewModels
         public Player Player { get; private set; }
 
         public GameInstance Game { get; private set; }
+
+        private CancellationTokenSource cancellationTokenSource;
 
         public string CardChoosenInCurrentRound
         {
@@ -131,8 +134,27 @@ namespace PlanningPoker.Web.ViewModels
         }
 
         protected void RevealCards()
+            => this.Game.RevealCards();
+
+        protected void RevealCardsNow()
         {
+            this.CancelCardsWithCountdown();
             this.Game.RevealCards();
+        }
+
+        protected async Task RevealCardsWithCountdown()
+        {
+            cancellationTokenSource = new CancellationTokenSource();
+            await this.Game.RevealCardsWithCountdown(cancellationTokenSource.Token);
+            cancellationTokenSource.Dispose();
+        }
+
+        protected void CancelCardsWithCountdown()
+            => cancellationTokenSource.Cancel();
+
+        protected void SwitchPlayStatus()
+        {
+            this.Game.SwitchPlayStatus(this.Player);
         }
 
         protected async Task NameChanged(ChangeEventArgs e)

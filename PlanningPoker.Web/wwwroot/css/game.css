@@ -23,6 +23,18 @@
     padding-left: 10px;
 }
 
+.players-notify {
+    padding: 5px 5px;
+    background-color: #334;
+    display: inline-block;
+    border-radius: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin: 5px;
+    width: 48px;
+    height: 32px;
+}
+
 .player-card {
     padding: 5px 5px;
     background-color: #334;

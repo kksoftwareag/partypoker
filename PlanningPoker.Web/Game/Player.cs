@@ -8,6 +8,9 @@ namespace PlanningPoker.Web.Game
         public event EventHandler<PlaySoundEventArgs> PlaySound;
 
         public string Name { get; set; }
+
+        public bool IsPlaying { get; set; } = true;
+
         public Guid Secret { get; set; }
 
         internal void NotifyPlayer()
