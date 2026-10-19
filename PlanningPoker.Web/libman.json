@@ -1,24 +1,6 @@
 {
-    "defaultDestination": "wwwroot/lib/",
-    "version": "1.0",
-    "defaultProvider": "cdnjs",
-    "libraries": [
-        {
-            "destination": "wwwroot/lib/bootstrap",
-            "library": "twitter-bootstrap@4.5.3",
-            "files": [
-                "css/bootstrap.css",
-                "js/bootstrap.min.js.map",
-                "css/bootstrap.min.css"
-            ]
-        },
-        {
-            "destination": "wwwroot/lib/bootstrap-dark",
-            "provider": "unpkg",
-            "library": "@forevolve/bootstrap-dark@1.0.0-alpha.1091",
-            "files": [
-                "dist/css/bootstrap-dark.css"
-            ]
-        }
-    ]
+  "defaultDestination": "wwwroot/lib/",
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": []
 }

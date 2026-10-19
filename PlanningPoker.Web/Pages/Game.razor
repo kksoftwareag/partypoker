@@ -1,220 +1,378 @@
-﻿@page "/{Hash}"
+@page "/{Hash}"
 @inherits GameViewModel
 
-<div id="game" @onkeydown="this.OnKeyDown">
-    <div class="row">
-        <div class="col-auto">
-            <label for="player-name">Your name:</label>
+@if (this.Game is null)
+{
+    return;
+}
+
+<div id="game" @onkeydown="this.OnKeyDown" class="container">
+
+    @* ---------- Status + moderation actions ---------- *@
+    <section class="game-topbar" aria-label="Rundenstatus">
+        <div class="round-info">
+            <div class="round-title">Runde @this.RoundNumber</div>
+            <div class="round-sub">@this.StatusText</div>
         </div>
 
-        <div class="col">
-            @if (this.Player != null)
+        <div class="vote-progress" role="group" aria-label="Abstimmungsfortschritt">
+            <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="@this.ActiveVoterCount" aria-valuenow="@this.VoteCount">
+                <span style="width: @(this.VotePercent)%"></span>
+            </div>
+            <span class="count">@this.VoteCount / @this.ActiveVoterCount haben gewählt</span>
+        </div>
+
+        <div class="topbar-actions">
+            <button type="button" class="btn @(this.IsAllVoted ? "btn-accent" : "btn-primary")"
+                    disabled="@(this.CanReveal == false)"
+                    @onclick="this.RevealCardsOrNow">
+                <span aria-hidden="true">🃏</span> @this.RevealLabel
+            </button>
+
+            @if (this.IsRevealed)
             {
-                <input id="player-name" class="form-control" type="text" value="@this.PlayerName" @onchange="this.NameChanged" @onkeydown:stopPropagation="true" />
-            }
-        </div>
-    </div>
-
-    @if (this.Game != null)
-    {
-        <div class="row mt-3">
-            <div class="col-auto">
-                <button class="btn btn-primary"
-                        disabled="@(this.Game.CurrentRound == null || (this.Game.CurrentRound.Cards.Any() == false && !this.Game.CurrentRound.IsRevealing) || this.Game.CurrentRound.IsRevealed == true)"
-                        @onclick="!this.Game.CurrentRound.IsRevealing ? this.RevealCards : this.RevealCardsNow">
-                    @if (!this.Game.CurrentRound.IsRevealing)
-                    {
-                        @:🃏 Reveal Cards
-                    }
-                    else
-                    {
-                        @:🃏 Reveal Cards now
-                    }
+                <button type="button" class="btn btn-accent" @onclick="this.StartNewRound">
+                    <span aria-hidden="true">→</span> Runde @(this.RoundNumber + 1) starten
                 </button>
-            </div>
-            <div class="col-auto">
-                <div class="row align-items-center">
-                    <div class="col-auto">Reveal countdown:</div>
-                    <select disabled="@(this.Game.CurrentRound.IsRevealing && !this.Game.CurrentRound.IsRevealed)" class="form-control col" @bind="@this.Game.SelectedCountDown">
-                        @foreach (var countdown in this.Game.RevealCountDownInSeconds)
-                        {
-                            <option value="@countdown">@($"{countdown}s")</option>
-                        }
-                    </select>
+            }
+        </div>
+    </section>
 
-                    <button class="btn col-auto ml-1 mr-1 @(this.Game.SelectedCountDown == 0 ? "btn-outline-success" : "btn-success")"
-                            disabled="@(this.Game.SelectedCountDown == 0 || this.Game.CurrentRound == null || this.Game.CurrentRound.IsRevealed == true || this.Game.CurrentRound.IsRevealing == true)"
-                            @onclick="this.RevealCardsWithCountdown">
-                        @if (this.Game.CurrentRound.IsRevealing && !this.Game.CurrentRound.IsRevealed)
-                        {
-                            @:🕑 @(this.Game.TimerSeconds)s
-                        }
-                        else
-                        {
-                            @:🕑
-                        }
-                    </button>
-                    @if (this.Game.CurrentRound.IsRevealing)
+    <div class="game-layout">
+        <div>
+            @* ---------- Players ---------- *@
+            <section aria-labelledby="players-title">
+                <div class="section-head">
+                    <h3 id="players-title">Spieler <span class="meta">(@this.ActiveVoterCount)</span></h3>
+                    @if (this.Game.Players.Count > 0)
                     {
-                        <button class="btn col btn-outline-danger"
-                                disabled="@(this.Game.SelectedCountDown == 0 || this.Game.CurrentRound == null)"
-                                @onclick="this.CancelCardsWithCountdown">
-                            ❌
+                        <button type="button" class="btn btn-sm btn-outline" @onclick="this.PlayBingSound">
+                            <span aria-hidden="true">🔊</span> Alle erinnern
                         </button>
                     }
                 </div>
 
-            </div>
-            @if (this.Player is not null)
-            {
-                <div class="col-auto">
-                    <button class="btn btn-primary"
-                            disabled="@(this.Game.CurrentRound?.IsRevealed == true || this.Game.CurrentRound.IsRevealing == true)"
-                            @onclick="this.SwitchPlayStatus">
-                        @(this.Player!.IsPlaying ? "👁 Spectate" : "🃏 Play")
-                    </button>
-                </div>
-            }
-            <div class="col-auto">
-                <button class="btn btn-success" 
-                        disabled="@(this.Game.CurrentRound?.IsRevealed == false)" 
-                        @onclick="this.StartNewRound">
-                        ✅ Start Round @(1 + this.Game.RoundNumber)
-                    </button>
-            </div>
-            <div class="col-auto">
-                <a class="btn btn-info" 
-                   target="_blank" 
-                   href="https://t.me/share/url?url=https://planningpoker.party/@this.Hash&text=Planning%20Poker">
-                   🔗 Share via Telegram
-               </a>
-            </div>
-        </div>
-    }
+                @if (this.Game.Players.Count == 0)
+                {
+                    <p class="meta">Noch niemand am Tisch. Bitte teile den Link rechts.</p>
+                }
+                else
+                {
+                    <div class="player-grid">
+                        @foreach (var player in this.Game.Players)
+                        {
+                            var hasCard = this.CurrentRound.Cards.ContainsKey(player);
+                            var isMe = player == this.Player;
+                            var highest = this.IsRevealed && this.CurrentRound.HighestCardsWithPlayer.Any(h => h.Player == player);
+                            var lowest = this.IsRevealed && this.CurrentRound.LowestCardsWithPlayer.Any(l => l.Player == player) && this.HighestNames != this.LowestNames;
 
-    @if (this.Game?.CurrentRound != null)
-    {
-        @if (this.Game.Players.Count > 0)
-        {
-            <div class="row mt-3">
-                <div class="col">
-                    <div class="hstack">
-                        <h4>Players</h4>
-                        <button class="btn btn-info players-notify" 
-                                @onclick="this.PlayBingSound">
-                            🔊
-                        </button>
-                    </div>
-                    @foreach (var player in this.Game.Players)
-                    {
-                        <div style="margin-top:10px" class="player-container">
-                            <div class="player-notify">
-                                <a href="javascript:void(0);" @onclick="(() => this.PlayBingSoundForPlayer(player))">🔊</a>
-                            </div>
+                            <div class="player-card @(isMe ? "is-me" : "")" @key="player.Secret">
+                                <button type="button" class="ping-btn" disabled="@(isMe || this.IsRevealed)"
+                                        title="An @player.Name erinnern" aria-label="An @player.Name erinnern"
+                                        @onclick="() => this.PlayBingSoundForPlayer(player)">
+                                    <span aria-hidden="true">🔔</span>
+                                </button>
 
-                            <div class="player">
-                                @player.Name
-                            </div>
-
-                            <div class="player-card">
-                                @if (this.Game.CurrentRound.Cards.ContainsKey(player) == true)
+                                @if (highest)
                                 {
-                                    if (this.Game.CurrentRound.IsRevealed == true)
+                                    <span class="tag">↑ hoch</span>
+                                }
+                                else if (lowest)
+                                {
+                                    <span class="tag" style="background: var(--kk-blue-100); color: var(--kk-blue);">↓ niedrig</span>
+                                }
+
+                                <div class="player-name" title="@player.Name">@player.Name</div>
+
+                                <div class="card-face @CardStateClass(hasCard, highest, lowest, isMe)"
+                                     aria-label="@CardLabel(player.Name, hasCard)">
+                                    @if (this.IsRevealed && hasCard)
                                     {
-                                        <div class="player-card-revealed">
-                                            @this.Game.CurrentRound.Cards[player]
-                                        </div>
+                                        @this.CurrentRound.Cards[player]
+                                    }
+                                    else if (hasCard)
+                                    {
+                                        <span aria-hidden="true">♠</span>
                                     }
                                     else
                                     {
-                                        @:🃏
+                                        <span aria-hidden="true">&#183;</span>
                                     }
-                                }
-                                else
-                                {
-                                    @:❌
-                                }
+                                </div>
                             </div>
-                        </div>
+                        }
+                    </div>
+                }
+            </section>
+
+            @* ---------- Your hand ---------- *@
+            <section class="hand" style="margin-top: var(--space-5);" aria-labelledby="hand-title">
+                <div class="hand-head">
+                    <h3 id="hand-title">Deine Karte</h3>
+                    @if (this.IsPlaying && this.IsRevealed == false && this.IsRevealing == false)
+                    {
+                        <span class="hint">Tipp: Die Tastatur wählt die Karte mit demselben Zeichen</span>
                     }
                 </div>
-            </div>
-        }
 
-        <div class="row mt-3">
-            <div class="col">
-                @if (this.Game != null && this.Game.CurrentRound != null && this.Player != null && this.Game.Players.Any() && !this.Game.CurrentRound.IsRevealed)
+                @if (this.IsPlaying == false)
                 {
-                    if (this.Player.IsPlaying)
-                    {
+                    <div class="spectate-banner">
+                        <span>👁 Du schaust zu und stimmst nicht ab.</span>
+                        <button type="button" class="btn btn-sm btn-primary" disabled="@(this.IsRevealed || this.IsRevealing)" @onclick="this.SwitchPlayStatus">
+                            Mitschätzen
+                        </button>
+                    </div>
+                }
+                else if (this.IsRevealed)
+                {
+                    <div class="spectate-banner" style="background: var(--kk-green-anteil); color: #17300a;">
+                        <span>Karten aufgedeckt. Dein Beitrag: <strong>@(this.CardChoosenInCurrentRound ?? "&#183;")</strong></span>
+                        <button type="button" class="btn btn-sm btn-accent" @onclick="this.StartNewRound">Nächste Runde</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="hand-cards" role="group" aria-label="Kartenauswahl" style="--hand-cards: @this.Game.CardDeck.Length">
                         @foreach (var card in this.Game.CardDeck)
                         {
-                            <button class="btn btn-outline-secondary mr-2" @onclick="(() => this.VoteCard(card))">
-                                @if (card == this.CardChoosenInCurrentRound)
-                                {
-                                    <strong style="color: white;">
-                                        @card
-                                    </strong>
-                                }
-                                else
-                                {
-                                    @card
-                                }
+                            var selected = card == this.CardChoosenInCurrentRound;
+                            <button type="button" class="hand-card"
+                                    aria-pressed="@(selected ? "true" : "false")"
+                                    aria-label="Karte @card"
+                                    disabled="@this.IsRevealing"
+                                    @onclick="() => this.VoteCard(card)">
+                                @card
+                                <kbd>@card</kbd>
                             </button>
                         }
-                    }
+                    </div>
                 }
-            </div>
+
+                <div class="hand-foot">
+                    <div class="field" style="min-width: 220px;">
+                        <label for="player-name">Dein Name</label>
+                        <div style="display: flex; gap: var(--space-2);">
+                            <input id="player-name" class="input" type="text" value="@this.PlayerName" maxlength="40"
+                                   placeholder="Name für die anderen" @onchange="this.NameChanged" @onkeydown:stopPropagation="true" />
+                            @if (this.IsPlaying)
+                            {
+                                <button type="button" class="btn btn-sm btn-outline" title="Stattdessen nur zuschauen"
+                                        disabled="@(this.IsRevealed || this.IsRevealing)" @onclick="this.SwitchToSpectator">
+                                    👁 Zuschauen
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="field" style="margin-left: auto;">
+                        <label id="countdown-label">Countdown vor dem Aufdecken</label>
+                        <div style="display: flex; gap: var(--space-2); align-items: center;">
+                            <div class="segmented" role="group" aria-labelledby="countdown-label">
+                                @foreach (var seconds in this.Game.RevealCountDownInSeconds)
+                                {
+                                    <button type="button" aria-pressed="@(this.Game.SelectedCountDown == seconds ? "true" : "false")"
+                                            disabled="@this.IsRevealing"
+                                            @onclick="() => this.SelectCountdown(seconds)">
+                                        @(seconds == 0 ? "aus" : $"{seconds}s")
+                                    </button>
+                                }
+                            </div>
+                            <button type="button" class="btn btn-sm btn-primary"
+                                    disabled="@(this.Game.SelectedCountDown == 0 || this.IsRevealing || this.IsRevealed || this.VoteCount == 0)"
+                                    title="Mit Countdown aufdecken"
+                                    @onclick="this.RevealCardsWithCountdown">
+                                ⏱ Start
+                            </button>
+                            @if (this.IsRevealing)
+                            {
+                                <span class="count" style="color: var(--kk-blue); font-weight: 700;">@this.CountdownDisplay s</span>
+                                <button type="button" class="btn btn-sm btn-danger-outline" @onclick="this.CancelCardsWithCountdown">
+                                    Abbrechen
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            @* ---------- Results ---------- *@
+            @if (this.IsRevealed)
+            {
+                <section class="results" aria-labelledby="result-title">
+                    <div class="results-head">
+                        <h3 id="result-title">Ergebnis</h3>
+                        <span class="meta">@this.VoteCount Stimme(n) in Runde @this.RoundNumber</span>
+                    </div>
+
+                    <div class="dist" role="img" aria-label="@this.ResultSummary">
+                        @foreach (var item in this.CardCounts)
+                        {
+                            var isTop = item.Count == this.MaxCardCount;
+                            <div class="dist-col @(isTop ? "is-top" : "")" title="@string.Join(", ", item.Players)">
+                                <div class="bar" style="height: @(BarHeight(item.Count))%;">
+                                    <span class="n">@item.Count×</span>
+                                </div>
+                                <span class="label">@item.Card</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="stat-grid">
+                        <div class="stat @(this.IsConsensus ? "is-consensus" : "")">
+                            <div class="k">Konsens</div>
+                            <div class="v">@(this.IsConsensus ? $"✓ {this.CardCounts[0].Card}" : "≠")</div>
+                            <div class="d">@(this.IsConsensus ? "Alle einig" : $"{this.CardCounts.Count} verschiedene Karten")</div>
+                        </div>
+                        <div class="stat">
+                            <div class="k">Durchschnitt</div>
+                            <div class="v">@(this.AverageCard?.ToString("0.#") ?? "&#183;")</div>
+                            <div class="d">ohne Fragezeichen / Kaffee</div>
+                        </div>
+                        <div class="stat">
+                            <div class="k">Höchste</div>
+                            <div class="v">@this.HighestValue</div>
+                            <div class="d" title="@this.HighestNames">@this.HighestNames</div>
+                        </div>
+                        <div class="stat">
+                            <div class="k">Niedrigste</div>
+                            <div class="v">@this.LowestValue</div>
+                            <div class="d" title="@this.LowestNames">@this.LowestNames</div>
+                        </div>
+                    </div>
+
+                    @if (this.HasSpread)
+                    {
+                        <div class="spread-note">
+                            <span aria-hidden="true">⚖️</span>
+                            <span>Die Schätzungen liegen weit auseinander. Diese Geschichte kurz besprechen oder ein zweites Mal schätzen.</span>
+                        </div>
+                    }
+                </section>
+            }
         </div>
 
-        @if (this.Game.Spectators.Count > 0)
-        {
-            <div class="row mt-3">
-                <div class="col">
-                    <h4>Spectators</h4>
-                    <br />
-                    @foreach (var spectator in this.Game.Spectators)
-                    {
-                        <div class="player-container">
-                            <div class="player-notify">
-                                <a href="javascript:void(0);" @onclick="(() => this.PlayBingSoundForPlayer(spectator))">🔊</a>
-                            </div>
+        @* ---------- Sidebar ---------- *@
+        <aside class="side" aria-label="Raum und Verlauf">
+            <div class="card">
+                <div class="panel-title"><h3>Einladen</h3></div>
+                <div class="side-details">
+                    <div class="room-line">
+                        <code>@this.Hash</code>
+                        <button type="button" class="btn btn-sm btn-primary" @onclick="this.CopyInviteLink">Link kopieren</button>
+                    </div>
+                    <a class="btn btn-sm btn-outline" target="_blank" rel="noopener"
+                       href="https://t.me/share/url?url=@(Uri.EscapeDataString(this.ShareUrl))&text=Planning%20Poker%20Runde">
+                        <span aria-hidden="true">📣</span> Per Telegram teilen
+                    </a>
+                </div>
+            </div>
 
-                            <div class="player">
-                                @spectator.Name
-                            </div>
+            <div class="card">
+                <div class="panel-title">
+                    <h3>Verlauf</h3>
+                    <span class="meta">@this.Game.Rounds.Count Runde(n)</span>
+                </div>
+                <div class="history">
+                    @foreach (var round in this.History)
+                    {
+                        <div class="history-row" @key="round.Round">
+                            <span class="who">Runde @round.Round · @round.Votes Stimme(n)</span>
+                            @if (round.IsRevealed)
+                            {
+                                <span class="value">@(round.CommonCard ?? "&#183;")</span>
+                                @if (round.Average.HasValue)
+                                {
+                                    <span class="who" style="flex: none;">Ø @round.Average.Value.ToString("0.#")</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="value is-open">läuft</span>
+                            }
                         </div>
                     }
                 </div>
             </div>
+
+            @if (this.Game.Spectators.Count > 0)
+            {
+                <div class="card">
+                    <div class="panel-title"><h3>Zuschauer</h3></div>
+                    <div class="spectator-list">
+                        @foreach (var spectator in this.Game.Spectators)
+                        {
+                            <span class="chip">
+                                @spectator.Name
+                                <button type="button" title="An @spectator.Name erinnern" aria-label="An @spectator.Name erinnern"
+                                        @onclick="() => this.PlayBingSoundForPlayer(spectator)">🔔</button>
+                            </span>
+                        }
+                    </div>
+                </div>
+            }
+        </aside>
+    </div>
+
+    <ToastHost />
+</div>
+
+@code {
+    private string StatusText
+    {
+        get
+        {
+            if (this.IsRevealed)
+            {
+                return "Karten aufgedeckt. Bitte besprecht das Ergebnis und startet die nächste Runde.";
+            }
+
+            if (this.IsRevealing)
+            {
+                return $"Aufdecken in {this.Game.TimerSeconds} s. Jetzt können alle noch abstimmen.";
+            }
+
+            if (this.IsAllVoted)
+            {
+                return "Alle haben gewählt. Zeit zum Aufdecken.";
+            }
+
+            if (this.ActiveVoterCount == 0)
+            {
+                return "Noch keine aktiven Spieler.";
+            }
+
+            return this.HasVotedInRound ? "Du hast gewählt. Warte auf die anderen." : "Wähle deine Karte.";
+        }
+    }
+
+    // Bar height as the share of all votes (a 1:1 tie shows as two half-height bars);
+    // small shares are lifted to a visible minimum.
+    private int BarHeight(int count)
+    {
+        var total = this.CardCounts.Sum(c => c.Count);
+
+        return total == 0 ? 0 : Math.Max(12, 100 * count / total);
+    }
+
+    private string ResultSummary => string.Join(", ", this.CardCounts.Select(c => $"{c.Card} von {c.Count}"));
+
+    private string CardStateClass(bool hasCard, bool highest, bool lowest, bool isMe)
+    {
+        if (this.IsRevealed)
+        {
+            return string.Join(" ", new[]
+            {
+                hasCard ? "is-revealed" : "is-empty",
+                highest ? "is-highest" : null,
+                lowest ? "is-lowest" : null,
+                isMe && !highest ? "is-mine" : null,
+            }.Where(s => s is not null));
         }
 
-        <div class="row mt-3">
-            <div class="col">
-                @if (this.Game != null && this.Game.CurrentRound != null && this.Player != null && this.Game.Players.Any() && this.Game.CurrentRound.IsRevealed)
-                {
-                    <div class="mt-3"><h4>Result:</h4></div>
-                    <div class="mt-3"><h5 style="margin-top:10px">Card counts</h5></div>
-                    <div class="mt-3">
-                        <table>
-                            @foreach (var selectedCard in this.Game.CurrentRound.Cards
-                                                .GroupBy(c => c.Value)
-                                                .OrderByDescending(k => k.Count())
-                                                .ThenBy(k => double.TryParse(k.Key, out var parsedValue) ? parsedValue : 0))
-                            {
-                                <tr>
-                                    <td>@($"🃏 {selectedCard.Key}")</td>
-                                    <td>=</td>
-                                    <td>@($"{selectedCard.Count()}")</td>
-                                </tr>
-                            }
-                        </table>
-                    </div>
-                    <div class="mt-3">@($"Total votes: {this.Game.CurrentRound.Cards.Count()}")</div>
-                    <div>@($"Highest vote(s): {string.Join(", ", this.Game.CurrentRound.HighestCardsWithPlayer.Select(c => c.Player.Name))}")</div>
-                    <div>@($"Lowest vote(s): {string.Join(", ", this.Game.CurrentRound.LowestCardsWithPlayer.Select(c => c.Player.Name))}")</div>
-                }
-            </div>
-        </div>
+        return hasCard ? "is-back" : "is-empty";
     }
-</div>
+
+    private static string CardLabel(string name, bool hasCard) =>
+        hasCard ? $"{name} hat gewählt" : $"{name} hat noch nicht gewählt";
+}

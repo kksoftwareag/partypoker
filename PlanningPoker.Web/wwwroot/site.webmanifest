@@ -1,6 +1,6 @@
 {
-    "name": "PlanningPoker.Party",
-    "short_name": "PlanningPoker",
+    "name": "K&K Planning Poker",
+    "short_name": "Planning Poker",
     "icons": [
         {
             "src": "/img/android-chrome-192x192.png",
@@ -13,7 +13,9 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#039",
-    "background_color": "#039",
-    "display": "standalone"
+    "theme_color": "#054597",
+    "background_color": "#054597",
+    "lang": "de",
+    "display": "standalone",
+    "start_url": "/"
 }

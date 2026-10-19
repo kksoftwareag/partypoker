@@ -1,6 +1,62 @@
-﻿@page "/"
+@page "/"
 @inherits IndexViewModel
 
-<h1>Planning Poker</h1>
+<section class="hero">
+    <div class="container hero-grid">
+        <div>
+            <span class="eyebrow">K&amp;K Planning Poker</span>
+            <h1>Schätzt gemeinsam.<br />Entscheidet schneller.</h1>
+            <p class="lead" style="margin-bottom: 0;">
+                Planning Poker für agile Teams: Raum teilen, Karten legen, aufdecken, ohne Anmeldung.
+                Alle Teilnehmer votieren verdeckt, das Ergebnis zeigt sofort Konsens und Ausreißer.
+            </p>
+        </div>
 
-<button class="btn btn-primary" @onclick="this.CreateGame">Create Game</button>
+        <div class="hero-art" aria-hidden="true">
+            <div class="hero-fan">
+                <div class="card-face">3</div>
+                <div class="card-face">5</div>
+                <div class="card-face">8</div>
+                <div class="card-face">?</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="join-panel">
+        <div class="card join-card">
+            <h2>Raum beitreten</h2>
+            <p>Gib den Raumcode oder den kompletten Link ein.</p>
+            <EditForm Model="@this.Join" OnValidSubmit="this.JoinGame" FormName="join">
+                <div class="join-form">
+                    <div class="field">
+                        <label for="join-code">Raumcode oder Link</label>
+                        <input id="join-code" class="input room-code-input" @bind="@this.Join.Room" @bind:event="oninput"
+                               placeholder="z. B. a1b2c3d4" autocomplete="off" spellcheck="false" />
+                        @if (string.IsNullOrWhiteSpace(this.Join.Room) == false && this.HasValidRoom == false)
+                        {
+                            <span class="hint" style="color: var(--kk-danger);">Das sieht nicht nach einem gültigen Raumcode aus.</span>
+                        }
+                    </div>
+                    <button type="submit" class="btn btn-outline" disabled="@(this.HasValidRoom == false)">Beitreten</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+    <section class="how" aria-label="So funktioniert es">
+        <div class="how-step">
+            <span class="num">1</span>
+            <div><strong>Raum teilen</strong><span>Link kopieren oder per Telegram weitergeben. Beitritt ohne Account.</span></div>
+        </div>
+        <div class="how-step">
+            <span class="num">2</span>
+            <div><strong>Verdeckt schätzen</strong><span>Jede*r wählt eine Karte. Der Fortschritt ist live für alle sichtbar.</span></div>
+        </div>
+        <div class="how-step">
+            <span class="num">3</span>
+            <div><strong>Aufdecken &amp; klären</strong><span>Ergebnis mit Verteilung, Durchschnitt und Ausreißern. Danach die nächste Runde.</span></div>
+        </div>
+    </section>
+</div>

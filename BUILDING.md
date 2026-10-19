@@ -1,10 +1,10 @@
 # Building Planning Poker
 ## Requirements
-This application is based on Microsoft .NET Core 8 LTS. You need to have the SDK installed to build the app.
+This application is based on Microsoft .NET 10 LTS. You need to have the SDK installed to build the app.
 
 ## Classic .NET Build
 ### Preparation
-1. Install the version of .NET Core SDK as documented the project file in the XML tag `TargetFramework`. Currently it's .NET 8.
+1. Install the version of .NET Core SDK as documented the project file in the XML tag `TargetFramework`. Currently it's .NET 10.
 	* Installation instructions
 		* [Windows](https://docs.microsoft.com/en-us/dotnet/core/install/windows?tabs=net60)
 		* [macOS](https://docs.microsoft.com/en-us/dotnet/core/install/macos)
