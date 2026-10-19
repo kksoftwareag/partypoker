@@ -25,6 +25,7 @@ namespace PlanningPoker.Web
             services.AddServerSideBlazor();
             services.AddBlazoredLocalStorage(config => config.JsonSerializerOptions.WriteIndented = true);
             services.AddScoped<UserState>();
+            services.AddScoped<Services.ToastService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -43,8 +44,8 @@ namespace PlanningPoker.Web
                         context.Context.Request.Path.ToString().Contains("ico", StringComparison.OrdinalIgnoreCase) ||
                         context.Context.Request.Path.ToString().Contains("png", StringComparison.OrdinalIgnoreCase))
                     {
-                        context.Context.Response.Headers.Add("cache-control", new[] { "public,max-age=31536000" });
-                        context.Context.Response.Headers.Add("Expires", new[] { DateTime.UtcNow.AddYears(1).ToString("R") }); // Format RFC1123
+                        context.Context.Response.Headers.CacheControl = "public,max-age=31536000";
+                        context.Context.Response.Headers.Expires = DateTime.UtcNow.AddYears(1).ToString("R"); // Format RFC1123
                     }
                 }
             });

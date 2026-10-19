@@ -5,7 +5,13 @@
     </Found>
     <NotFound>
         <LayoutView Layout="@typeof(MainLayout)">
-            <p>Sorry, there's nothing at this address.</p>
+            <div class="container">
+                <div class="card" style="max-width: 520px; margin: var(--space-6) auto; text-align: center;">
+                    <h2>Seite nicht gefunden</h2>
+                    <p>Diese Adresse gehört nicht zu einem Raum. Erstelle einen neuen Raum oder prüfe den Link.</p>
+                    <a class="btn btn-primary" href="">Zur Startseite</a>
+                </div>
+            </div>
         </LayoutView>
     </NotFound>
 </Router>

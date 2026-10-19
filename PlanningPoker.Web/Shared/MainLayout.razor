@@ -1,15 +1,16 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
 
-<div class="sidebar">
+<div class="app-shell">
     <NavMenu />
-</div>
 
-<div class="main">
-    <div class="top-row px-4">
-        <a href="https://kk-software.de/" target="_blank">by K&amp;K Software AG - SoftDev Team</a>
-    </div>
-
-    <div class="content px-4">
+    <main id="main" class="app-main">
         @Body
-    </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <span>Planning Poker · ein Werkzeug aus dem SoftDev Team der K&amp;K Software AG</span>
+            <a href="https://kk-software.de/" target="_blank" rel="noopener">Webseite der K&amp;K Software AG ↗</a>
+        </div>
+    </footer>
 </div>
